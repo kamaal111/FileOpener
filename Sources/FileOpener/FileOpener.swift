@@ -8,7 +8,7 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-public enum Errors: Error {
+public enum FileOpenerErrors: Error {
     case fileNotFound
     case fileCouldNotBeRead(context: Error)
     case notAllowedToReadFile
@@ -18,7 +18,7 @@ extension View {
     public func openFile(
         isPresented: Binding<Bool>,
         contentTypes: [UTType] = [.content],
-        onFileOpen: @escaping (_ content: Result<Data?, Errors>) -> Void) -> some View {
+        onFileOpen: @escaping (_ content: Result<Data?, FileOpenerErrors>) -> Void) -> some View {
             self
                 .modifier(OpenFileViewModifier(
                     isPresented: isPresented,
@@ -31,12 +31,12 @@ private struct OpenFileViewModifier: ViewModifier {
     @Binding var isPresented: Bool
 
     let contentTypes: [UTType]
-    let onFileOpen: (_ content: Result<Data?, Errors>) -> Void
+    let onFileOpen: (_ content: Result<Data?, FileOpenerErrors>) -> Void
 
     init(
         isPresented: Binding<Bool>,
         contentTypes: [UTType],
-        onFileOpen: @escaping (_ content: Result<Data?, Errors>) -> Void) {
+        onFileOpen: @escaping (_ content: Result<Data?, FileOpenerErrors>) -> Void) {
             self._isPresented = isPresented
             self.contentTypes = contentTypes
             self.onFileOpen = onFileOpen
@@ -88,12 +88,12 @@ private struct DocumentPickerView: UIViewControllerRepresentable {
     @Binding var isPresented: Bool
 
     let contentTypes: [UTType]
-    let onFileOpen: (_ content: Result<Data?, Errors>) -> Void
+    let onFileOpen: (_ content: Result<Data?, FileOpenerErrors>) -> Void
 
     init(
         isPresented: Binding<Bool>,
         contentTypes: [UTType],
-        onFileOpen: @escaping (_ content: Result<Data?, Errors>) -> Void) {
+        onFileOpen: @escaping (_ content: Result<Data?, FileOpenerErrors>) -> Void) {
             self._isPresented = isPresented
             self.contentTypes = contentTypes
             self.onFileOpen = onFileOpen
@@ -136,7 +136,7 @@ private struct DocumentPickerView: UIViewControllerRepresentable {
 private struct SecureFileOpener {
     private init() { }
 
-    static func readData(from url: URL) -> Result<Data, Errors> {
+    static func readData(from url: URL) -> Result<Data, FileOpenerErrors> {
         guard url.startAccessingSecurityScopedResource() else {
             return .failure(.notAllowedToReadFile)
         }
