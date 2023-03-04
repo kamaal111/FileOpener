@@ -60,7 +60,7 @@ private struct OpenFileViewModifier: ViewModifier {
                 let status = panel.runModal()
                 if status != .OK {
                     switch status {
-                    case .abort, .continue, .stop:
+                    case .abort, .continue, .stop, .cancel:
                         break
                     default:
                         assertionFailure("unknown status")
